@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>JUS - Owner Admin</title>
+<style>
+*{box-sizing:border-box;font-family:Arial}
+body{margin:0}
+.login-wrap{background:#12307e;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.card{background:#fff;width:100%;max-width:430px;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.logo{text-align:center}.logo img{height:75px;width:75px;border-radius:50%;border:2px solid #e2e8f0;background:#fff}
+label{font-size:13px;font-weight:700;margin:11px 0 5px;display:block;color:#1e293b}
+input,select{width:100%;padding:11px 12px;border:1.5px solid #dbe2ea;border-radius:10px;font-size:14px;outline:none}
+input[readonly]{background:#f1f5f9;font-weight:700}
+.pass-wrap{position:relative}.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer}
+.btn{width:100%;background:#12307e;color:#fff;border:none;padding:13px;border-radius:12px;font-weight:bold;margin-top:16px;cursor:pointer}
+.btn2{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;margin-right:4px}
+#dashboard{display:none;background:#f1f5f9;min-height:100vh}
+.header{background:#12307e;color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.searchBox{flex:1;max-width:380px;position:relative}.searchBox input{padding:10px 12px 10px 38px;border-radius:20px;border:none;font-size:13px}.searchBox span{position:absolute;left:12px;top:50%;transform:translateY(-50%)}
+.sidebar{width:270px;background:#0f255e;min-height:calc(100vh - 62px);float:left;padding:15px}
+.sidebar b{color:#94a3b8;font-size:11px;display:block;margin:14px 0 8px}
+.sidebar a{display:block;padding:11px 10px;color:#cbd5e1;text-decoration:none;border-radius:8px;margin-bottom:5px;font-size:14px;cursor:pointer}
+.sidebar a.active,.sidebar a:hover{background:#1e3a8a;color:#fff}
+.main{margin-left:270px;padding:18px}
+.box{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:15px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-bottom:16px}
+.stat div{background:#fff;padding:14px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.stat b{font-size:22px;color:#12307e;display:block}.stat small{font-size:11px;color:#64748b}
+.stat2{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.stat2 div{border-left:5px solid #12307e}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #eee;text-align:left}th{background:#f8fafc}
+.tab{display:none}.tab.active{display:block}
+.create-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reportBtn{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.reportBtn button{padding:8px 14px;border-radius:20px;border:1.5px solid #12307e;background:#fff;color:#12307e;cursor:pointer;font-size:12px;font-weight:700}
+.reportBtn button.active{background:#12307e;color:#fff}
+.filterRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;background:#fff;padding:10px;border-radius:10px}
+.filterRow select{max-width:250px}
+.editBox{border:2px dashed #16a34a;background:#f0fdf4}
+@media(max-width:768px){.sidebar{width:100%;float:none;min-height:auto}.main{margin-left:0}.create-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="loginSec" class="login-wrap">
+<div class="card">
+<div class="logo"><img src="logo.png" onerror="this.src='https://via.placeholder.com/75?text=JUS'"><h2 style="margin:6px 0 2px;color:#12307e">JUS</h2><p style="margin:0;font-size:12px;color:#64748b">Janakalyan Unnayan Sohayok - JUS<br>Management & Accounting System</p></div>
+<label>Select Role</label><select id="role" onchange="handleRole()"><option>Owner Admin</option><option>Owner Branch</option><option>Owner Shop</option><option>Client Branch</option><option>Client Shop</option></select>
+<label>Organization Name</label><input type="text" id="orgName" value="Janakalyan Unnayan Sohayok - JUS" readonly>
+<label>Owner / Client Name</label><input type="text" id="ownerName" value="MD. LIMON AHAMMED">
+<label>BD Phone Number</label><input type="tel" id="phone" value="01949915225">
+<label>Username</label><input type="text" id="username" value="mdlimonahammed2004@mla">
+<label>Password</label><div class="pass-wrap"><input type="password" id="password" value="Limon915225@"><span class="eye" onclick="togglePass()">👁️</span></div>
+<button class="btn" onclick="doLogin()">🔐 Login</button>
+</div>
+</div>
+
+<div id="dashboard">
+<div class="header">
+<div style="display:flex;align-items:center;gap:10px"><img src="logo.png" style="height:38px;width:38px;border-radius:50%;background:#fff"><div><b>Janakalyan Unnayan Sohayok - JUS</b><br><small id="uInfo"></small></div></div>
+<div class="searchBox"><span>🔍</span><input type="text" id="globalSearch" placeholder="Search..." oninput="render()"></div>
+<button onclick="doLogout()" style="background:#ef4444;color:#fff;border:none;padding:8px 14px;border-radius:20px;cursor:pointer">Logout</button>
+</div>
+
+<div class="sidebar" id="sideMenu"></div>
+
+<div class="main">
+
+<!-- OWNER ADMIN DASHBOARD -->
+<div id="ownerAdminSection">
+<div class="filterRow"><b style="font-size:13px">🔎 Branch Filter:</b><select id="branchFilter" onchange="render()"><option value="all">All Branch - সব ব্রাঞ্চ/শপ</option></select><button onclick="document.getElementById('branchFilter').value='all';render()" style="padding:8px 12px;border-radius:20px;border:none;background:#e2e8f0;font-size:12px;cursor:pointer">Reset</button><small id="filterInfo" style="color:#16a34a;font-weight:700"></small></div>
+<div class="box" style="background:linear-gradient(135deg,#12307e,#1e40af);color:#fff">
+<h3 style="margin:0 0 12px">📊 Owner Admin - Total Count <small id="dashBranchName" style="background:rgba(255,255,255,.2);padding:3px 8px;border-radius:10px;font-size:11px;margin-left:8px"></small></h3>
+<div class="stat" style="margin-bottom:0">
+<div><b id="cTotalBranch">0</b><small>Total Branch/Shop</small></div>
+<div><b id="cOwnerBranch">0</b><small>Owner Branch</small></div>
+<div><b id="cOwnerShop">0</b><small>Owner Shop</small></div>
+<div><b id="cClientBranch">0</b><small>Client Branch</small></div>
+<div><b id="cClientShop">0</b><small>Client Shop</small></div>
+</div>
+<div style="margin-top:15px;background:rgba(255,255,255,.15);padding:12px;border-radius:10px">
+<h4 style="margin:0 0 10px">📅 Daily / Weekly / Monthly Report</h4>
+<div class="reportBtn"><button id="rDaily" class="active" onclick="showReport('daily')">Daily</button><button id="rWeekly" onclick="showReport('weekly')">Weekly</button><button id="rMonthly" onclick="showReport('monthly')">Monthly</button></div>
+<div id="reportBox" style="background:#fff;color:#1e293b;border-radius:8px;padding:12px;font-size:13px"></div>
+</div>
+</div>
+<!-- OWNER CAN VIEW CLIENT SHOP DATA -->
+<div id="ownerViewClientShop" class="box" style="display:none;border-left:5px solid #16a34a"><h3 id="ownerViewTitle">🛒 Client Shop Products - Owner View</h3><div id="ownerClientStats"></div><table id="ownerClientTable"></table></div>
+</div>
+
+<!-- CLIENT SHOP DASHBOARD - ALADA -->
+<div id="clientShopSection" style="display:none">
+<div class="box" style="background:linear-gradient(135deg,#0f766e,#14b8a6);color:#fff">
+<h3 style="margin:0 0 5px">🛒 Client Shop Dashboard - <span id="clientShopName"></span></h3><small id="clientShopInfo" style="opacity:.9"></small>
+<div class="stat stat2" style="margin-top:15px">
+<div style="border-left-color:#f59e0b"><b id="pTotal" style="color:#f59e0b">0</b><small>টোটাল প্রোডাক্ট</small></div>
+<div style="border-left-color:#16a34a"><b id="pProduced" style="color:#16a34a">0</b><small>করা প্রোডাক্ট</small></div>
+<div style="border-left-color:#3b82f6"><b id="pSold" style="color:#3b82f6">0</b><small>বিক্রি হওয়া প্রোডাক্ট</small></div>
+<div style="border-left-color:#8b5cf6"><b id="pParty" style="color:#8b5cf6">0</b><small>পার্টিতে যাওয়া প্রোডাক্ট</small></div>
+<div style="border-left-color:#ec4899"><b id="pAdvance" style="color:#ec4899">0</b><small>অগ্রিম দেওয়া প্রোডাক্ট</small></div>
+<div style="border-left-color:#ef4444"><b id="pLoss" style="color:#ef4444">0</b><small>লস হওয়া প্রোডাক্ট</small></div>
+<div style="border-left-color:#06b6d4"><b id="pStock" style="color:#06b6d4">0</b><small>স্টক থাকা প্রোডাক্ট</small></div>
+</div>
+</div>
+
+<div class="box" style="border-left:5px solid #14b8a6">
+<h3>➕ প্রোডাক্ট Add করো</h3>
+<div class="create-grid">
+<input id="prodName" placeholder="প্রোডাক্টের নাম">
+<input type="number" id="prodTotal" placeholder="টোটাল প্রোডাক্ট">
+<input type="number" id="prodProduced" placeholder="করা প্রোডাক্ট">
+<input type="number" id="prodSold" placeholder="বিক্রি হওয়া প্রোডাক্ট">
+<input type="number" id="prodParty" placeholder="পার্টিতে যাওয়া প্রোডাক্ট">
+<input type="number" id="prodAdvance" placeholder="অগ্রিম দেওয়া প্রোডাক্ট">
+<input type="number" id="prodLoss" placeholder="লস হওয়া প্রোডাক্ট">
+<input type="date" id="prodDate">
+</div>
+<button class="btn" onclick="addProduct()" style="background:#0f766e">💾 Save Product</button>
+</div>
+
+<div class="box"><h3>📋 আমার প্রোডাক্ট লিস্ট</h3><table id="clientProdTable"></table></div>
+</div>
+
+<!-- OWNER TABS -->
+<div id="ownerTabs">
+<div id="tab-ownerBranch" class="tab active"><div class="box"><h3>🏢 All Owner Branch</h3><table id="tblOwner"></table></div></div>
+<div id="tab-ownerShop" class="tab"><div class="box"><h3>🏪 All Owner Shop</h3><table id="tblOwnerShop"></table></div></div>
+<div id="tab-clientBranch" class="tab"><div class="box"><h3>🏦 All Client Branch</h3><table id="tblClientBranch"></table></div></div>
+<div id="tab-clientShop" class="tab"><div class="box"><h3>🛒 All Client Shop</h3><table id="tblClientShop"></table></div></div>
+<div id="tab-cheating" class="tab"><div class="box" style="border-left:5px solid #ef4444"><h3 style="color:#dc2626">🚨 Cheating Option</h3></div></div>
+<div id="tab-create" class="tab"><div class="box" id="createBox" style="border-left:5px solid #12307e">
+<h3 id="createTitle">👑 Create New User</h3>
+<div class="create-grid">
+<select id="newRole" onchange="handleCreateRole()"><option>Owner Branch</option><option>Owner Shop</option><option>Client Branch</option><option>Client Shop</option></select>
+<input id="newName" placeholder="Branch / Shop Name">
+<input id="newPhone" placeholder="Phone Number">
+<input id="newUser" placeholder="Username">
+<input id="newPass" placeholder="Password" type="text">
+<input id="newOrgClient" placeholder="Organization Name">
+<input type="date" id="newOpenDate">
+<input id="newAddress" placeholder="Full Address - গ্রাম, থানা, জেলা" style="grid-column:span 2">
+</div>
+<button class="btn" id="saveBtn" onclick="createUser()">➕ Create & Save Safe</button>
+<button class="btn" id="cancelBtn" onclick="cancelEdit()" style="display:none;background:#64748b;margin-top:8px">❌ Cancel Edit</button>
+<p id="orgClientHint" style="font-size:11px;color:#16a34a"></p>
+</div></div>
+<div id="tab-delete" class="tab"><div class="box" style="border-left:5px solid #dc2626"><h3>🗑️ Member Delete</h3><table id="tblDelete"></table></div></div>
+<div class="box" id="allUsersBox"><h3>📋 All Users List <small id="searchResult" style="color:#16a34a;font-size:11px"></small></h3><table id="userTable"></table></div>
+</div>
+
+</div>
+</div>
+
+<script>
+let users=JSON.parse(localStorage.getItem('jus_users_v2')||'[]');
+if(users.length===0){users=[{role:'Owner Admin',name:'MD. LIMON AHAMMED',phone:'01949915225',username:'mdlimonahammed2004@mla',password:'Limon915225@',org:'Janakalyan Unnayan Sohayok - JUS',clientName:'MD. LIMON AHAMMED',address:'-',openDate:'2024-01-01',createdAt:new Date().toISOString()}];localStorage.setItem('jus_users_v2',JSON.stringify(users));}
+let products=JSON.parse(localStorage.getItem('jus_products')||'[]');
+let cur=null;let reportType='daily';let editIndex=-1;
+function handleRole(){let r=document.getElementById('role').value;let org=document.getElementById('orgName');if(r==='Owner Admin'||r==='Owner Branch'||r==='Owner Shop'){org.value='Janakalyan Unnayan Sohayok - JUS';org.readOnly=true;}else{org.value='';org.readOnly=false;}}
+function handleCreateRole(){if(editIndex!==-1) return;let r=document.getElementById('newRole').value;let input=document.getElementById('newOrgClient');let hint=document.getElementById('orgClientHint');if(r==='Owner Branch'||r==='Owner Shop'){input.placeholder='Organization Name - Owner এর জন্য';hint.innerText='Owner এর জন্য Organization Name';input.value='Janakalyan Unnayan Sohayok - JUS';}else{input.placeholder='Client Name - ক্লায়েন্টের নাম';hint.innerText='Client এর জন্য Client Name';input.value='';}}
+function togglePass(){let p=document.getElementById('password');p.type=p.type==='password'?'text':'password';}
+function doLogin(){
+let r=document.getElementById('role').value;let u=document.getElementById('username').value;let p=document.getElementById('password').value;
+let f=users.find(x=>x.username===u && x.password===p && x.role===r);if(!f){alert('Role / Username / Password ভুল');return;}
+cur=f;document.getElementById('loginSec').style.display='none';document.getElementById('dashboard').style.display='block';document.getElementById('uInfo').innerText=f.role+' | '+f.name;
+let menu=document.getElementById('sideMenu');
+if(f.role==='Owner Admin'){
+menu.innerHTML=<b>OWNER ADMIN ONLY</b><a id="m1" class="active" onclick="openTab('ownerBranch')">🏢 All Owner Branch</a><a id="m2" onclick="openTab('ownerShop')">🏪 All Owner Shop</a><a id="m3" onclick="openTab('clientBranch')">🏦 All Client Branch</a><a id="m4" onclick="openTab('clientShop')">🛒 All Client Shop</a><a id="m5" onclick="openTab('cheating')">🚨 Cheating</a><b>CREATE & DELETE</b><a id="m6" onclick="openTab('create')">➕ Create / Edit</a><a id="m7" onclick="openTab('delete')">🗑️ Delete</a>;
+document.getElementById('ownerAdminSection').style.display='block';document.getElementById('clientShopSection').style.display='none';document.getElementById('ownerTabs').style.display='block';
+}else if(f.role==='Client Shop'){
+menu.innerHTML=<b>CLIENT SHOP</b><a class="active">🏠 My Dashboard - ${f.name}</a><small style="color:#94a3b8;padding:10px;display:block">Client: ${f.clientName||f.name}</small>;
+document.getElementById('ownerAdminSection').style.display='none';document.getElementById('ownerTabs').style.display='none';document.getElementById('clientShopSection').style.display='block';
+document.getElementById('clientShopName').innerText=f.name;document.getElementById('clientShopInfo').innerText=Username: ${f.username} | Client: ${f.clientName||'-'} | ${f.address||''};
+renderClientProducts();
+}else{
+menu.innerHTML=<b>${f.role}</b><a class="active">🏠 My Dashboard</a>;
+document.getElementById('ownerAdminSection').style.display='none';document.getElementById('clientShopSection').style.display='none';document.getElementById('ownerTabs').style.display='none';
+}
+updateBranchFilter();render();showReport('daily');
+}
+function openTab(id){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.sidebar a').forEach(a=>a.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');let map={ownerBranch:'m1',ownerShop:'m2',clientBranch:'m3',clientShop:'m4',cheating:'m5',create:'m6',delete:'m7'};if(map[id]&&document.getElementById(map[id]))document.getElementById(map[id]).classList.add('active');}
+function updateBranchFilter(){let sel=document.getElementById('branchFilter');if(!sel) return;let curV=sel.value;let branches=[...new Set(users.filter(u=>u.role!=='Owner Admin').map(u=>u.name))];sel.innerHTML='<option value="all">All Branch - সব ব্রাঞ্চ/শপ</option>';branches.forEach(b=>{let o=document.createElement('option');o.value=b;o.text=b;sel.appendChild(o);});if(branches.includes(curV)) sel.value=curV;}
+function showReport(type){reportType=type;let btns=document.querySelectorAll('.reportBtn button');btns.forEach(b=>b.classList.remove('active'));let target=document.getElementById('r'+type.charAt(0).toUpperCase()+type.slice(1));if(target) target.classList.add('active');let now=new Date();let branchF=document.getElementById('branchFilter')?.value||'all';let base=branchF==='all'?users:users.filter(u=>u.name===branchF);let filtered=[];if(type==='daily'){filtered=base.filter(u=>new Date(u.createdAt).toDateString()===now.toDateString());}else if(type==='weekly'){let w=new Date();w.setDate(now.getDate()-7);filtered=base.filter(u=>new Date(u.createdAt)>=w);}else{filtered=base.filter(u=>new Date(u.createdAt).getMonth()===now.getMonth());}document.getElementById('reportBox').innerHTML=<b>${type.toUpperCase()} - ${filtered.length} জন - [${branchF==='all'?'All':branchF}]</b><br><table><tr><th>Name</th><th>Role</th><th>Client/Org</th><th>Opening Date</th></tr>+filtered.map(u=><tr><td>${u.name}</td><td>${u.role}</td><td>${u.clientName||u.org||'-'}</td><td>${u.openDate||'-'}</td></tr>).join('')+'</table>';}
+function render(){
+let q=(document.getElementById('globalSearch')?.value||'').toLowerCase();
+let branchF=document.getElementById('branchFilter')?.value||'all';
+let branchFiltered = branchF==='all'? users : users.filter(u=>u.name===branchF);
+let filtered=branchFiltered.filter(u=>(u.name+' '+u.role+' '+u.username+' '+(u.clientName||'')+' '+(u.org||'')).toLowerCase().includes(q));
+if(cur && cur.role==='Owner Admin'){
+document.getElementById('filterInfo').innerText=branchF==='all'?'':'Filtered: '+branchF;
+document.getElementById('dashBranchName').innerText=branchF==='all'?'All Branch':branchF;
+document.getElementById('cOwnerBranch').innerText=branchFiltered.filter(x=>x.role==='Owner Branch').length;
+document.getElementById('cOwnerShop').innerText=branchFiltered.filter(x=>x.role==='Owner Shop').length;
+document.getElementById('cClientBranch').innerText=branchFiltered.filter(x=>x.role==='Client Branch').length;
+document.getElementById('cClientShop').innerText=branchFiltered.filter(x=>x.role==='Client Shop').length;
+document.getElementById('cTotalBranch').innerText=branchFiltered.filter(x=>x.role!=='Owner Admin').length;
+document.getElementById('searchResult').innerText=q?` - ${filtered.length} found`:(branchF!=='all'?` - ${filtered.length} in ${branchF}`:'');
+let t=document.getElementById('userTable');
+t.innerHTML='<tr><th>Role</th><th>Branch/Shop</th><th>Client/Org</th><th>Phone</th><th>Action</th></tr>';
+filtered.forEach(u=>{let idx=users.indexOf(u);let action=u.role==='Owner Admin'?'Protected':<button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">✏️ Edit</button><button class="btn2" style="background:#dc2626;color:#fff" onclick="delUser(${idx})">Delete</button>;t.innerHTML+=<tr><td>${u.role}</td><td>${u.name}</td><td>${u.clientName||u.org||'-'}</td><td>${u.phone}</td><td>${action}</td></tr>;});
+document.getElementById('tblDelete').innerHTML='<tr><th>Name</th><th>Client/Org</th><th>Role</th><th>Action</th></tr>'+filtered.filter(u=>u.role!=='Owner Admin').map(u=>{let idx=users.indexOf(u);return <tr><td>${u.name}</td><td>${u.clientName||u.org||'-'}</td><td>${u.role}</td><td><button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">Edit</button><button class="btn2" style="background:#dc2626;color:#fff" onclick="delUser(${idx})">Delete</button></td></tr>;}).join('')||'<tr><td colspan=4>No Member</td></tr>';
+document.getElementById('tblOwner').innerHTML='<tr><th>Branch</th><th>Org Name</th><th>Phone</th><th>Action</th></tr>'+filtered.filter(x=>x.role==='Owner Branch').map(x=>{let idx=users.indexOf(x);return <tr><td>${x.name}</td><td>${x.org||'-'}</td><td>${x.phone}</td><td><button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">Edit</button></td></tr>;}).join('')||'<tr><td colspan=4>No Data</td></tr>';
+document.getElementById('tblOwnerShop').innerHTML='<tr><th>Shop</th><th>Org Name</th><th>Phone</th><th>Action</th></tr>'+filtered.filter(x=>x.role==='Owner Shop').map(x=>{let idx=users.indexOf(x);return <tr><td>${x.name}</td><td>${x.org||'-'}</td><td>${x.phone}</td><td><button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">Edit</button></td></tr>;}).join('')||'<tr><td colspan=4>No Data</td></tr>';
+document.getElementById('tblClientBranch').innerHTML='<tr><th>Branch</th><th>Client Name</th><th>Phone</th><th>Action</th></tr>'+filtered.filter(x=>x.role==='Client Branch').map(x=>{let idx=users.indexOf(x);return <tr><td>${x.name}</td><td>${x.clientName||'-'}</td><td>${x.phone}</td><td><button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">Edit</button></td></tr>;}).join('')||'<tr><td colspan=4>No Data</td></tr>';
+document.getElementById('tblClientShop').innerHTML='<tr><th>Shop</th><th>Client Name</th><th>Phone</th><th>Action</th></tr>'+filtered.filter(x=>x.role==='Client Shop').map(x=>{let idx=users.indexOf(x);return <tr><td>${x.name}</td><td>${x.clientName||'-'}</td><td>${x.phone}</td><td><button class="btn2" style="background:#16a34a;color:#fff" onclick="editUser(${idx})">Edit</button></td></tr>;}).join('')||'<tr><td colspan=4>No Data</td></tr>';
+// Owner view client shop products
+if(branchF!=='all'){
+let shopUser=users.find(u=>u.name===branchF && u.role==='Client Shop');
+if(shopUser){showOwnerClientProducts(shopUser.username, shopUser.name);document.getElementById('ownerViewClientShop').style.display='block';}
+else{document.getElementById('ownerViewClientShop').style.display='none';}
+}else{document.getElementById('ownerViewClientShop').style.display='none';}
+if(cur) showReport(reportType);
+}
+}
+function showOwnerClientProducts(shopUsername, shopName){
+let prods=products.filter(p=>p.shopUsername===shopUsername);
+let total=prods.reduce((s,p)=>s+(+p.total||0),0);
+let produced=prods.reduce((s,p)=>s+(+p.produced||0),0);
+let sold=prods.reduce((s,p)=>s+(+p.sold||0),0);
+let party=prods.reduce((s,p)=>s+(+p.party||0),0);
+let advance=prods.reduce((s,p)=>s+(+p.advance||0),0);
+let loss=prods.reduce((s,p)=>s+(+p.loss||0),0);
+let stock=prods.reduce((s,p)=>s+(+p.stock||0),0);
+document.getElementById('ownerViewTitle').innerText=🛒 ${shopName} - Products (Owner View);
+document.getElementById('ownerClientStats').innerHTML=<div class="stat stat2" style="margin-bottom:10px"><div><b>${total}</b><small>টোটাল</small></div><div><b>${produced}</b><small>করা</small></div><div><b>${sold}</b><small>বিক্রি</small></div><div><b>${party}</b><small>পার্টিতে</small></div><div><b>${advance}</b><small>অগ্রিম</small></div><div><b>${loss}</b><small>লস</small></div><div><b>${stock}</b><small>স্টক</small></div></div>;
+document.getElementById('ownerClientTable').innerHTML='<tr><th>Product</th><th>Total</th><th>করা</th><th>বিক্রি</th><th>পার্টি</th><th>অগ্রিম</th><th>লস</th><th>স্টক</th><th>Date</th></tr>'+prods.map(p=><tr><td>${p.name}</td><td>${p.total}</td><td>${p.produced}</td><td>${p.sold}</td><td>${p.party}</td><td>${p.advance}</td><td>${p.loss}</td><td>${p.stock}</td><td>${p.date||''}</td></tr>).join('')||'<tr><td colspan=9>No Product Yet</td></tr>';
+}
+// CLIENT SHOP PRODUCT LOGIC
+function calcStock(){let t=+document.getElementById('prodTotal').value||0;let s=+document.getElementById('prodSold').value||0;let pa=+document.getElementById('prodParty').value||0;let l=+document.getElementById('prodLoss').value||0;return t - s - pa - l;}
+function addProduct(){
+if(!cur || cur.role!=='Client Shop'){alert('Only Client Shop');return;}
+let name=document.getElementById('prodName').value;
+let total=+document.getElementById('prodTotal').value||0;
+let produced=+document.getElementById('prodProduced').value||0;
+let sold=+document.getElementById('prodSold').value||0;
+let party=+document.getElementById('prodParty').value||0;
+let advance=+document.getElementById('prodAdvance').value||0;
+let loss=+document.getElementById('prodLoss').value||0;
+let date=document.getElementById('prodDate').value;
+if(!name||total===0){alert('প্রোডাক্টের নাম ও টোটাল দাও');return;}
+let stock = total - sold - party - loss;
+if(stock<0) stock=0;
+products.push({id:Date.now(),shopUsername:cur.username,shopName:cur.name,name,total,produced,sold,party,advance,loss,stock,date,createdAt:new Date().toISOString()});
+localStorage.setItem('jus_products',JSON.stringify(products));
+document.getElementById('prodName').value='';document.getElementById('prodTotal').value='';document.getElementById('prodProduced').value='';document.getElementById('prodSold').value='';document.getElementById('prodParty').value='';document.getElementById('prodAdvance').value='';document.getElementById('prodLoss').value='';document.getElementById('prodDate').value='';
+renderClientProducts();
+}
+function renderClientProducts(){
+if(!cur) return;
+let myProds=products.filter(p=>p.shopUsername===cur.username);
+let total=myProds.reduce((s,p)=>s+(+p.total||0),0);
+let produced=myProds.reduce((s,p)=>s+(+p.produced||0),0);
+let sold=myProds.reduce((s,p)=>s+(+p.sold||0),0);
+let party=myProds.reduce((s,p)=>s+(+p.party||0),0);
+let advance=myProds.reduce((s,p)=>s+(+p.advance||0),0);
+let loss=myProds.reduce((s,p)=>s+(+p.loss||0),0);
+let stock=myProds.reduce((s,p)=>s+(+p.stock||0),0);
+document.getElementById('pTotal').innerText=total;
+document.getElementById('pProduced').innerText=produced;
+document.getElementById('pSold').innerText=sold;
+document.getElementById('pParty').innerText=party;
+document.getElementById('pAdvance').innerText=advance;
+document.getElementById('pLoss').innerText=loss;
+document.getElementById('pStock').innerText=stock;
+document.getElementById('clientProdTable').innerHTML='<tr><th>Product</th><th>Total</th><th>করা</th><th>বিক্রি</th><th>পার্টি</th><th>অগ্রিম</th><th>লস</th><th>স্টক</th><th>Date</th><th>Action</th></tr>'+myProds.map(p=><tr><td>${p.name}</td><td>${p.total}</td><td>${p.produced}</td><td>${p.sold}</td><td>${p.party}</td><td>${p.advance}</td><td>${p.loss}</td><td><b>${p.stock}</b></td><td>${p.date||''}</td><td><button class="btn2" style="background:#dc2626;color:#fff" onclick="delProduct(${p.id})">Delete</button></td></tr>).join('')||'<tr><td colspan=10>No Product</td></tr>';
+}
+function delProduct(id){if(confirm('Delete product?')){products=products.filter(p=>p.id!==id);localStorage.setItem('jus_products',JSON.stringify(products));renderClientProducts();}}
+function editUser(i){
+editIndex=i;let u=users[i];openTab('create');
+document.getElementById('createBox').className='box editBox';
+document.getElementById('createTitle').innerText='✏️ Edit User - '+u.name;
+document.getElementById('newRole').value=u.role;document.getElementById('newName').value=u.name;document.getElementById('newPhone').value=u.phone;document.getElementById('newUser').value=u.username;document.getElementById('newPass').value=u.password;document.getElementById('newOpenDate').value=u.openDate||'';document.getElementById('newAddress').value=u.address||'';
+let orgClientInput=document.getElementById('newOrgClient');
+if(u.role==='Owner Branch'||u.role==='Owner Shop'){orgClientInput.placeholder='Organization Name';orgClientInput.value=u.org||'';}else{orgClientInput.placeholder='Client Name';orgClientInput.value=u.clientName||'';}
+document.getElementById('saveBtn').innerText='💾 Update & Save';document.getElementById('saveBtn').style.background='#16a34a';document.getElementById('cancelBtn').style.display='block';
+}
+function cancelEdit(){editIndex=-1;document.getElementById('createBox').className='box';document.getElementById('createTitle').innerText='👑 Create New User';document.getElementById('saveBtn').innerText='➕ Create & Save Safe';document.getElementById('saveBtn').style.background='#12307e';document.getElementById('cancelBtn').style.display='none';document.getElementById('newName').value='';document.getElementById('newPhone').value='';document.getElementById('newUser').
