@@ -1,30 +1,74 @@
-<!DOCTYPE html>
-<html>
+[1:03 PM, 10/7/2026] ᴍᴅ. ʟɪᴍᴏɴ ᴀʜᴀᴍᴍᴇᴅ: <!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JUS</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>JUS - Owner Admin</title>
 <style>
-body{margin:0;background:#0b4da1;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:Arial}
-.box{background:#fff;width:88%;max-width:340px;border-radius:18px;padding:28px;text-align:center}
-h1{margin:0;color:#0b4da1;font-size:42px;letter-spacing:3px}
-.sub{font-size:12px;color:#555;margin:4px 0 20px 0}
-input{width:100%;padding:12px;margin:6px 0 12px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;text-align:left}
-.btn{width:100%;background:#6b7280;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:bold;margin-top:6px}
-label{font-size:12px;font-weight:bold;display:block;text-align:left}
-</style>
-</head>
-<body>
-<div class="box">
-<h1>JUS</h1>
-<div class="sub">Janakalyan Unnayan Sohayok</div>
+*{box-sizing:border-box;font-family:Arial}
+body{margin:0}
+.login-wrap{background:#12307e;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:15px}
+.card{background:#fff;width:100%;max-width:430px;border-radius:18px;padding:22px;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.logo{text-align:center}.logo img{height:75px;width:75px;border-radius:50%;border:2px solid #e2e8f0;background:#fff}
+label{font-size:13px;font-weight:700;margin:11px 0 5px;display:block;color:#1e293b}
+input,select{width:100%;padding:11px 12px;border:1.5px solid #dbe2ea;border-radius:10px;font-size:…
+[1:05 PM, 10/7/2026] ᴍᴅ. ʟɪᴍᴏɴ ᴀʜᴀᴍᴍᴇᴅ: # JUS - Janakalyan Unnayan Sohayok
 
-<label>Username</label>
-<input type="text" placeholder="Username">
-<label>Password</label>
-<input type="password" placeholder="Password">
+<p align="center">
+  <img src="logo.png" width="140" alt="JUS Logo">
+</p>
+<h2 align="center">Janakalyan Unnayan Sohayok - JUS</h2>
+<p align="center">Management & Accounting System</p>
 
-<button class="btn">Coming Soon</button>
-</div>
-</body>
-</html>
+---
+### 🌐 Live Link
+**https://JUS-MLA.github.io/jus-feb/**
+
+### 🏢 Organization Details
+| Field | Details |
+|-------|---------|
+| *Organization Name* | Janakalyan Unnayan Sohayok - JUS |
+| *Short Name* | JUS |
+| *Owner Name* | Md. [Your Owner Name] |
+| *Location* | Rajshahi, Bangladesh |
+| *Official Phone* | +880 17XXXXXXXX / +880 18XXXXXXXX |
+| *Support Email* | jus.support@gmail.com |
+
+### 👥 User Roles & Login System
+
+| Role Name | Username | Password | Access Level | BD Phone Format |
+|-----------|----------|----------|--------------|-----------------|
+| *Owner Admin* | owner_admin | Owner@2026 | Full System Control | +88017XXXXXXXX |
+| *Support Admin* | support_admin | Support@2026 | Support & Management | +88018XXXXXXXX |
+| *Owner Branch User* | owner_branch | Branch@2026 | Own Branch Control | +88019XXXXXXXX |
+| *Client User* | client_user | Client@2026 | Client Dashboard View | +88016XXXXXXXX |
+| *Client Branch User* | client_branch | Cb@2026 | Branch Client View | +88015XXXXXXXX |
+| *Main Demo Admin* | admin | JUS@2026 | Demo Full Access | +88013XXXXXXXX |
+
+### 🔐 Login Features
+- ✅ *Organization Name* auto show on login page
+- ✅ *Owner Name* display
+- ✅ *BD All Phone Number Support* - +880 format, 11 digit validation
+- ✅ *Username* field
+- ✅ *Password with Show/Hide Eye Icon* 👁️
+- ✅ *Password Height/Strength Meter* - Weak / Medium / Strong show korbe
+- ✅ *Role Select Dropdown* - Owner Admin, Support Admin, Owner Branch User, Client User, Client Branch User
+- ✅ *Forgot Password with OTP*
+- ✅ *Remember Me* option
+
+### 🔑 Forgot Password & OTP System
+1. Click *Forgot Password?*
+2. Enter *BD Mobile Number* (+8801XXXXXXXXX)
+3. Click *Send OTP*
+4. Demo OTP: 123456
+5. Enter New Password + Confirm Password
+6. Password Strength: Weak / Medium / Strong dekha jabe
+7. Reset Success -> Login again
+
+### 🔒 Password Show / Hide & Strength
+```js
+- Eye Icon e click korle password dekhabe/lukabe
+- Password Strength Logic:
+    - Weak: < 6 char
+    - Medium: 6-8 char + number
+    - Strong: 8+ char + number + special char (@,#,$)
